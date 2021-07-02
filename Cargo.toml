@@ -1,5 +1,5 @@
 [package]
-name = "ProjectEuler-rs"
+name = "project-euler-rs"
 version = "0.1.0"
 authors = ["komori-n <ikamat.kmr@gmail.com>"]
 edition = "2018"
