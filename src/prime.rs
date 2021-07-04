@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 pub struct Primes {
 	list: Vec<u64>,
 }
@@ -48,6 +50,21 @@ impl Primes {
 
 		factors
 	}
+
+	pub fn factor_num(&self, n: u64) -> u64 {
+		let factors = self.factorize(n);
+
+		let factor_map = factors.iter().fold(HashMap::new(), |mut factor_map, x| {
+			let count = factor_map.entry(x).or_insert(0u64);
+			*count += 1u64;
+
+			factor_map
+		});
+
+		factor_map
+			.iter()
+			.fold(1, |factor_num, (_, count)| factor_num * (count + 1))
+	}
 }
 
 #[cfg(test)]
@@ -68,5 +85,11 @@ mod tests {
 		let factors = primes.factorize(24);
 
 		assert_eq!(factors, vec![2, 2, 2, 3]);
+	}
+
+	#[test]
+	fn factor_num() {
+		let primes = Primes::new(100);
+		assert_eq!(primes.factor_num(28), 6);
 	}
 }
