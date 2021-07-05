@@ -25,6 +25,59 @@ fn combination_impl(n: u64, k: u64) -> u64 {
 	combination_impl(n - 1, k - 1) + combination_impl(n - 1, k)
 }
 
+const DIGIT1_LETTER: [&'static str; 20] = [
+	"zero",
+	"one",
+	"two",
+	"three",
+	"four",
+	"five",
+	"six",
+	"seven",
+	"eight",
+	"nine",
+	"ten",
+	"eleven",
+	"twelve",
+	"thirteen",
+	"fourteen",
+	"fifteen",
+	"sixteen",
+	"seventeen",
+	"eighteen",
+	"nineteen",
+];
+
+const DIGIT2_LETTER: [&'static str; 10] = [
+	"zero", "ten", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety",
+];
+
+fn to_letters_below_100(n: u64) -> String {
+	match n {
+		i if i < 20 => DIGIT1_LETTER[i as usize].to_owned(),
+		i if i % 10 == 0 => DIGIT2_LETTER[(i / 10) as usize].to_owned(),
+		i if i < 100 => format!(
+			"{}-{}",
+			DIGIT2_LETTER[(i / 10) as usize],
+			DIGIT1_LETTER[(i % 10) as usize]
+		),
+		_ => unreachable!(),
+	}
+}
+
+pub fn to_letters(n: u64) -> String {
+	match n {
+		i if i < 100 => to_letters_below_100(n),
+		i if i % 100 == 0 => format!("{} hundred", DIGIT1_LETTER[(i / 100) as usize]),
+		i if i < 1000 => format!(
+			"{} hundred and {}",
+			DIGIT1_LETTER[(i / 100) as usize],
+			to_letters_below_100(n % 100)
+		),
+		_ => unimplemented!(),
+	}
+}
+
 pub struct EachDigit<T> {
 	remain: T,
 }
@@ -77,6 +130,29 @@ mod tests {
 		assert_eq!(
 			EachDigit::new(BigInt::from(334)).collect::<Vec<_>>(),
 			vec![4.into(), 3.into(), 3.into()]
+		);
+	}
+
+	#[test]
+	fn to_letters_test() {
+		assert_eq!(to_letters(0), String::from("zero"));
+		assert_eq!(to_letters(1), String::from("one"));
+		assert_eq!(to_letters(23), String::from("twenty-three"));
+		assert_eq!(to_letters(34), String::from("thirty-four"));
+		assert_eq!(to_letters(45), String::from("forty-five"));
+		assert_eq!(to_letters(56), String::from("fifty-six"));
+		assert_eq!(to_letters(67), String::from("sixty-seven"));
+		assert_eq!(to_letters(78), String::from("seventy-eight"));
+		assert_eq!(to_letters(89), String::from("eighty-nine"));
+		assert_eq!(to_letters(91), String::from("ninety-one"));
+
+		assert_eq!(
+			to_letters(123),
+			String::from("one hundred and twenty-three")
+		);
+		assert_eq!(
+			to_letters(334),
+			String::from("three hundred and thirty-four")
 		);
 	}
 }
