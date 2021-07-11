@@ -1,5 +1,7 @@
 use std::collections::HashMap;
 
+use num::pow;
+
 pub struct Primes {
 	list: Vec<u64>,
 }
@@ -65,6 +67,23 @@ impl Primes {
 			.iter()
 			.fold(1, |factor_num, (_, count)| factor_num * (count + 1))
 	}
+
+	pub fn sum_divisors(&self, n: u64) -> u64 {
+		let factors = self.factorize(n);
+
+		let factor_map = factors.iter().fold(HashMap::new(), |mut factor_map, x| {
+			let count = factor_map.entry(x).or_insert(0usize);
+			*count += 1;
+
+			factor_map
+		});
+
+		factor_map.iter().fold(1, |factor_num, (d, x)| {
+			let sum_d = (0..(x + 1)).map(|i| pow(**d, i)).sum::<u64>();
+
+			factor_num * sum_d
+		})
+	}
 }
 
 #[cfg(test)]
@@ -91,5 +110,11 @@ mod tests {
 	fn factor_num() {
 		let primes = Primes::new(100);
 		assert_eq!(primes.factor_num(28), 6);
+	}
+
+	#[test]
+	fn sum_divisors() {
+		let primes = Primes::new(100);
+		assert_eq!(primes.sum_divisors(28), 28 * 2);
 	}
 }
