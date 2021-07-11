@@ -1,5 +1,5 @@
 use memoise::memoise;
-use num::Zero;
+use num::{Integer, One, Zero};
 use std::cmp::PartialOrd;
 use std::ops::{Div, Rem};
 
@@ -8,6 +8,14 @@ pub fn is_palindromic(n: u64) -> bool {
 	let rev_str: String = n_str.chars().rev().collect();
 
 	n_str == rev_str
+}
+
+pub fn factorial<T: Integer + Zero + One + Clone>(n: T) -> T {
+	if n == T::zero() {
+		T::one()
+	} else {
+		n.clone() * factorial(n - T::one())
+	}
 }
 
 pub fn combination(n: u64, k: u64) -> u64 {
@@ -116,6 +124,11 @@ mod tests {
 		assert!(is_palindromic(2772));
 		assert!(is_palindromic(272));
 		assert!(!is_palindromic(334));
+	}
+
+	#[test]
+	fn factorial_test() {
+		assert_eq!(factorial(4), 24);
 	}
 
 	#[test]
