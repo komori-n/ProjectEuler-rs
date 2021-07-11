@@ -1,24 +1,29 @@
-pub struct Fibonacci {
-	curr: u64,
-	next: u64,
+use num::Num;
+
+pub struct Fibonacci<T: Num + Clone> {
+	curr: T,
+	next: T,
 }
 
-impl Iterator for Fibonacci {
-	type Item = u64;
+impl<T: Num + Clone> Iterator for Fibonacci<T> {
+	type Item = T;
 
 	fn next(&mut self) -> Option<Self::Item> {
-		let new_next = self.curr + self.next;
+		let new_next = self.curr.clone() + self.next.clone();
 
-		self.curr = self.next;
+		self.curr = self.next.clone();
 		self.next = new_next;
 
-		Some(self.curr)
+		Some(self.curr.clone())
 	}
 }
 
-impl Fibonacci {
-	pub fn new(zero: u64, first: u64) -> Fibonacci {
-		Fibonacci{curr: zero, next: first}
+impl<T: Num + Clone> Fibonacci<T> {
+	pub fn new(zero: T, first: T) -> Self {
+		Self {
+			curr: zero,
+			next: first,
+		}
 	}
 }
 
@@ -28,7 +33,7 @@ mod tests {
 
 	#[test]
 	fn basic() {
-		let mut fib = Fibonacci::new(0, 1);
+		let mut fib = Fibonacci::<u64>::new(0, 1);
 
 		assert_eq!(fib.next().unwrap(), 1);
 		assert_eq!(fib.next().unwrap(), 1);
