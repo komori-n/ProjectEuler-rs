@@ -86,6 +86,33 @@ impl Primes {
 	}
 }
 
+pub struct Abundants {
+	primes: Primes,
+	curr: u64,
+}
+
+impl Iterator for Abundants {
+	type Item = u64;
+
+	fn next(&mut self) -> Option<Self::Item> {
+		self.curr += 1;
+		while self.primes.sum_divisors(self.curr) <= 2 * self.curr {
+			self.curr += 1;
+		}
+
+		Some(self.curr)
+	}
+}
+
+impl Abundants {
+	pub fn new() -> Self {
+		Self {
+			primes: Primes::new(1_000_000),
+			curr: 1,
+		}
+	}
+}
+
 #[cfg(test)]
 mod tests {
 	use super::*;
@@ -116,5 +143,12 @@ mod tests {
 	fn sum_divisors() {
 		let primes = Primes::new(100);
 		assert_eq!(primes.sum_divisors(28), 28 * 2);
+	}
+
+	#[test]
+	fn abundants() {
+		let mut abundants = Abundants::new();
+		assert_eq!(abundants.next(), Some(12));
+		assert_eq!(abundants.next(), Some(18));
 	}
 }
