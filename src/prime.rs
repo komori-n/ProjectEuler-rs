@@ -32,6 +32,22 @@ impl Primes {
 		self.list.iter()
 	}
 
+	pub fn is_prime(&self, n: u64) -> bool {
+		let mut l = 0;
+		let mut r = self.list.len();
+
+		while r - l > 1 {
+			let m = (l + r) / 2;
+			if n >= self.list[m] {
+				l = m;
+			} else {
+				r = m;
+			}
+		}
+
+		self.list[l] == n
+	}
+
 	pub fn factorize(&self, mut n: u64) -> Vec<u64> {
 		let mut factors = Vec::new();
 
