@@ -10,6 +10,13 @@ pub fn is_palindromic(n: u64) -> bool {
 	n_str == rev_str
 }
 
+pub fn is_palindromic_bin(n: u64) -> bool {
+	let n_str = format!("{:b}", n);
+	let rev_str: String = n_str.chars().rev().collect();
+
+	n_str == rev_str
+}
+
 pub fn factorial<T: Integer + Zero + One + Clone>(n: T) -> T {
 	if n == T::zero() {
 		T::one()
